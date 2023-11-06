@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function home(Request $request, HomeService $homeService): JsonResponse
     {
-        $weather = $homeService->getWeather('130.0.33.226');
+        $weather = $homeService->getWeather($request->ip());
 
         return HomeResource::make($weather)->response();
     }
