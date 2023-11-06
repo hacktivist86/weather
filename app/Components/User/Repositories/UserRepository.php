@@ -2,22 +2,21 @@
 
 namespace App\Components\User\Repositories;
 
-use App\Components\Core\BaseRepository;
-use App\Components\Order\Models\Order;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
-class UserRepository extends BaseRepository
+class UserRepository
 {
-    /**
-     * @param Order $model
-     */
-    public function __construct(Order $model)
+    public function __construct(protected User $user)
     {
-        parent::__construct($model);
     }
 
-    public function getOrderByUniqId(string $id, string $fieldName): ?Model
+    public function findOneBy(array $conditions): ?User
     {
-        return $this->findOneBy([$fieldName => $id]);
+        return $this->user->where($conditions)->first();
+    }
+
+    public function create(array $data = []): User
+    {
+        return $this->user->create($data);
     }
 }

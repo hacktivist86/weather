@@ -2,53 +2,35 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Components\User\DTO\UserLoginData;
+use App\Components\User\DTO\UserRegisterData;
+use App\Components\User\Services\AuthService;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\Api\LoginRequest;
+use App\Http\Requests\Api\RegisterRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
-    public function store(Request $request): JsonResponse
+    public function __construct(private AuthService $authService)
     {
-        $request->validate([
-            'first_name' => ['required', 'string', 'max:64'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Password::defaults()],
-            'token_name' => ['required', 'string', 'max:32'],
-        ]);
+    }
 
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        event(new Registered($user));
-
-        $token = $user->createToken($request->token_name)->plainTextToken;
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $token = $this->authService->apiRegister(UserRegisterData::from($request->all()));
 
         return response()->json(['token' => $token]);
     }
 
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-            'token_name' => ['required', 'string', 'max:32'],
-        ]);
+        $token = $this->authService->apiLogin(UserLoginData::from($request->all()));
 
-        $user = User::where('email', $request->email)->first();
-
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (! $token) {
             return response()->json(['error' => 'The provided credentials are incorrect.'], 401);
         }
 
-        return response()->json(['token' => $user->createToken($request->token_name)->plainTextToken]);
+        return response()->json(['token' => $token]);
     }
 }
