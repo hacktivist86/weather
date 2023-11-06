@@ -1,0 +1,16 @@
+{
+    "status": "success",
+    "country": "Ukraine",
+    "countryCode": "UA",
+    "region": "51",
+    "regionName": "Odessa",
+    "city": "Odesa",
+    "zip": "65000",
+    "lat": 46.4752,
+    "lon": 30.7338,
+    "timezone": "Europe/Kyiv",
+    "isp": "TeNeT Networking Centre",
+    "org": "TeNeT Telecommunication Company",
+    "as": "AS6876 TENET Scientific Production Enterprise LLC",
+    "query": "130.0.33.226"
+}

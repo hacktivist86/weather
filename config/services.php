@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'ip_api' => [
+        'domain' => env('IP_API_DOMAIN'),
+    ],
+
+    'open_weather_map' => [
+        'domain' => env('OPEN_WEATHER_API_DOMAIN'),
+        'api_key' => env('OPEN_WEATHER_API_KEY'),
+    ],
 ];
